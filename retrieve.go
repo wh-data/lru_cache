@@ -15,6 +15,7 @@ func (l *LRUCache) Get(key string) (interface{}, error) {
 		//if expire, also delete in map and return
 		if expired := ele.isExpired(); expired {
 			delete(l.Elements, key)
+			l.Size--
 			return nil, err
 		}
 		//set to tail

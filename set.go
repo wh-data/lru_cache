@@ -3,10 +3,8 @@ package lru_cache
 import "time"
 
 func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
-	var ext bool
 	//check exist
 	if ele, exist := l.Elements[key]; exist {
-		ext = exist
 		err := l.delete(ele)
 		if err != nil {
 			return err
@@ -31,9 +29,7 @@ func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
 		return err
 	}
 	//adjust size
-	if !ext {
-		l.Size++
-	}
+	l.Size++
 	//check exceed capacity, it happen after added new element, but at most it will exceed 1 ele
 	if l.Size > l.Capacity {
 		//delete in list
