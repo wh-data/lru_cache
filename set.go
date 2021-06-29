@@ -8,12 +8,17 @@ import (
 
 func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
 	//check max mem
-	if exceedMaxMem() {
+	if l.exceedMaxMem() {
 		runtime.GC()
 		time.Sleep(1 * time.Second)
-		//retry
-		if exceedMaxMem() {
-			return fmt.Errorf("exceed max memory : %d/%d", mem.Alloc, *maxM)
+		//lru
+		for l.exceedMaxMem() {
+			key, err := l.deleteLinkHead()
+			if err != nil {
+				return fmt.Errorf("err when lru to delete old key, err: %v", err)
+			}
+			runtime.GC()
+			fmt.Println("lru delete old key: ", key)
 		}
 	}
 	//check exist

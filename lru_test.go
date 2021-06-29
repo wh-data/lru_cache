@@ -7,7 +7,7 @@ import (
 )
 
 func TestLru(t *testing.T) {
-	lruCache := NewLRUCache(2)
+	lruCache := NewLRUCache(2, 100*1024*1024)
 	fmt.Println(lruCache.GetCapacity())
 	fmt.Println("===========")
 	fmt.Print("list and err: ")
