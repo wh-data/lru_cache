@@ -15,10 +15,10 @@ type LRUCache struct {
 	Elements map[string]*LRUElement
 	Size     int32
 	Capacity int32
-	MaxM     int32 //Bytes
+	MaxM     int64 //Bytes
 }
 
-func NewLRUCache(capacity, maxM int32) *LRUCache {
+func NewLRUCache(capacity int32, maxM int64) *LRUCache {
 	cache := &LRUCache{
 		Head:     &LRUElement{},
 		Tail:     &LRUElement{},
@@ -36,3 +36,5 @@ func NewLRUCache(capacity, maxM int32) *LRUCache {
 	cache.Tail.Prev = cache.Head
 	return cache
 }
+
+//todo: add mutex

@@ -26,14 +26,12 @@ func main() {
 	}()
 	lruCache := initTest()
 	count := 0
-	for count < 10 { //36367 {
+	for count < 10 {
 		count++
 		key := strconv.Itoa(count)
 		lruCache.Set(key, "test", 20)
-		//fmt.Println("count: ", count)
 		time.Sleep(1 * time.Millisecond)
 	}
-	fmt.Println("waiting for gc")
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Simple Shell")
 	fmt.Println("---------------------")
@@ -59,6 +57,8 @@ func main() {
 		case "view":
 			fmt.Println(lruCache.ViewMap())
 			fmt.Println(lruCache.ViewLinkedList())
+		case "settolimit":
+			settolimit(lruCache)
 		default:
 			//lruCache.Get(text)
 			fmt.Println(lruCache.Get(text))
@@ -71,7 +71,7 @@ func main() {
 
 func initTest() *lru_cache.LRUCache {
 	//test
-	lruCache := lru_cache.NewLRUCache(36367)
+	lruCache := lru_cache.NewLRUCache(999999, 10*1024*1024)
 	fmt.Println(lruCache.GetCapacity())
 	fmt.Println("===========")
 	fmt.Print("list and err: ")
@@ -141,6 +141,26 @@ func initTest() *lru_cache.LRUCache {
 	fmt.Print("get key : 2, res and err: ")
 	fmt.Println(lruCache.Get("2"))
 	return lruCache
+}
+
+func settolimit(cache *lru_cache.LRUCache) {
+	count := 0
+	content, err := ioutil.ReadFile("bigfile.txt")
+	for {
+		key := strconv.Itoa(count)
+		var newcontent []byte
+		newcontent = append(newcontent, content...)
+		newcontent = append(newcontent, []byte("big"+key)...)
+		err = cache.Set(key, newcontent, -1)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		count++
+		if count > 140 { //139 is a tem test data
+			break
+		}
+	}
 }
 
 func loadBig(cache *lru_cache.LRUCache) {
