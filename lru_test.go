@@ -6,10 +6,8 @@ import (
 	"time"
 )
 
-var lruCache LRUCache
-
 func TestLru(t *testing.T) {
-	lruCache = NewLRUCache(2)
+	lruCache := NewLRUCache(2)
 	fmt.Println(lruCache.GetCapacity())
 	fmt.Println("===========")
 	fmt.Print("list and err: ")

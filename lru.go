@@ -17,8 +17,8 @@ type LRUCache struct {
 	Capacity int32
 }
 
-func NewLRUCache(capacity int32) LRUCache {
-	cache := LRUCache{
+func NewLRUCache(capacity int32) *LRUCache {
+	cache := &LRUCache{
 		Head:     &LRUElement{},
 		Tail:     &LRUElement{},
 		Elements: make(map[string]*LRUElement),
