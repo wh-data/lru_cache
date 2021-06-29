@@ -1,8 +1,21 @@
 package lru_cache
 
-import "time"
+import (
+	"fmt"
+	"runtime"
+	"time"
+)
 
 func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
+	//check max mem
+	if exceedMaxMem() {
+		runtime.GC()
+		time.Sleep(1 * time.Second)
+		//retry
+		if exceedMaxMem() {
+			return fmt.Errorf("exceed max memory : %d/%d", mem.Alloc, *maxM)
+		}
+	}
 	//check exist
 	if ele, exist := l.Elements[key]; exist {
 		err := l.delete(ele)
@@ -10,6 +23,7 @@ func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
 			return err
 		}
 	}
+	//new obj
 	ele := &LRUElement{
 		Prev:      nil,
 		Next:      nil,
