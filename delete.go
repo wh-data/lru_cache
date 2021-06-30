@@ -1,5 +1,15 @@
 package lru_cache
 
+import "fmt"
+
+func (l *LRUCache) Delete(key string) error {
+	ele, ok := l.Elements[key]
+	if !ok {
+		return fmt.Errorf("key %s not exist", key)
+	}
+	return l.deleteElement(ele)
+}
+
 func (l *LRUCache) deleteElement(ele *LRUElement) error {
 	//1. delete ele in link
 	err := l.deleteLinkElement(ele)
@@ -12,8 +22,8 @@ func (l *LRUCache) deleteElement(ele *LRUElement) error {
 	return nil
 }
 
-//deleteLinkElement is a base part of Delete
-//gc will restore the deleted obj space
+//deleteLinkElement is a base part of DeleteElement
+//gc will recycle space of the deleted obj
 func (l *LRUCache) deleteLinkElement(ele *LRUElement) error {
 	if l.Size < 1 {
 		return nil
