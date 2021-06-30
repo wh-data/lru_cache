@@ -1,5 +1,9 @@
 package lru_cache
 
+import (
+	"sync"
+)
+
 type LRUCache struct {
 	Head     *LRUElement
 	Tail     *LRUElement
@@ -7,6 +11,7 @@ type LRUCache struct {
 	Size     int32
 	Capacity int32
 	MaxM     int64 //Bytes
+	lock     *sync.Mutex
 }
 
 func NewLRUCache(capacity int32, maxM int64) *LRUCache {
@@ -17,6 +22,7 @@ func NewLRUCache(capacity int32, maxM int64) *LRUCache {
 		Size:     0,
 		Capacity: capacity,
 		MaxM:     maxM,
+		lock:     new(sync.Mutex),
 	}
 	if cache.MaxM <= 0 {
 		cache.MaxM = 5 * 1024 * 1024 * 1025 //default 5GB
@@ -27,5 +33,3 @@ func NewLRUCache(capacity int32, maxM int64) *LRUCache {
 	cache.Tail.Prev = cache.Head
 	return cache
 }
-
-//todo: add mutex

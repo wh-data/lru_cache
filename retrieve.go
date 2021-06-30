@@ -6,6 +6,8 @@ import (
 )
 
 func (l *LRUCache) Get(key string) (interface{}, error) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
 	if ele, ok := l.Elements[key]; ok {
 		//delete (have to do it at beginning)
 		err := l.deleteLinkElement(ele)
@@ -26,6 +28,8 @@ func (l *LRUCache) Get(key string) (interface{}, error) {
 }
 
 func (l *LRUCache) GetSize() (int32, error) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
 	if l.Size != int32(len(l.Elements)) {
 		return l.Size, fmt.Errorf("link size not equal map size, need to rebuild lru cache")
 	}

@@ -7,6 +7,8 @@ import (
 )
 
 func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
+	l.lock.Lock()
+	defer l.lock.Unlock()
 	//check exceed capacity (key count)
 	if l.Size >= l.Capacity {
 		key, err := l.deleteLru()
