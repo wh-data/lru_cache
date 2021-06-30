@@ -1,14 +1,5 @@
 package lru_cache
 
-type LRUElement struct {
-	Prev      interface{}
-	Next      interface{}
-	Key       string
-	Val       interface{}
-	Expire    float64 //check only before "Get" or "ViewExpire
-	TimeStamp int64
-}
-
 type LRUCache struct {
 	Head     *LRUElement
 	Tail     *LRUElement

@@ -11,9 +11,9 @@ func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
 	if l.Size >= l.Capacity {
 		key, err := l.deleteLru()
 		if err != nil {
-			return fmt.Errorf("err when lru to delete old key, err: %v", err)
+			return fmt.Errorf("err when lru to deleteElement old key, err: %v", err)
 		}
-		fmt.Printf("lru delete old key: %s\n", key)
+		fmt.Printf("lru deleteElement old key: %s\n", key)
 	}
 	//check exceed max mem
 	if l.exceedMaxMem() {
@@ -32,7 +32,7 @@ func (l *LRUCache) Set(key string, val interface{}, expire float64) error {
 	//check exist
 	if ele, exist := l.Elements[key]; exist {
 		//delete in both link and map
-		err := l.delete(ele)
+		err := l.deleteElement(ele)
 		if err != nil {
 			return err
 		}

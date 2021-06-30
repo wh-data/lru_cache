@@ -12,7 +12,7 @@ func (l *LRUCache) Get(key string) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		//if expire, also delete in map and return
+		//if expired, also delete in map and return
 		if expired := ele.isExpired(); expired {
 			delete(l.Elements, key)
 			l.Size--
@@ -32,22 +32,11 @@ func (l *LRUCache) GetSize() (int32, error) {
 	return l.Size, nil
 }
 
-func (l *LRUCache) ClearExpire() error {
-	for _, ele := range l.Elements {
-		if ele.isExpired() {
-			err := l.delete(ele)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
 func (l *LRUCache) GetCapacity() int32 {
 	return l.Capacity
 }
 
+//ViewLinkedList view all elements in list
 func (l *LRUCache) ViewLinkedList() ([]interface{}, error) {
 	list := make([]interface{}, 0)
 	next := l.Head.Next.(*LRUElement)
@@ -60,6 +49,7 @@ func (l *LRUCache) ViewLinkedList() ([]interface{}, error) {
 	}
 }
 
+//ViewMap view all elements in map
 func (l *LRUCache) ViewMap() (map[string]interface{}, error) {
 	elements := make(map[string]interface{})
 	for k, e := range l.Elements {
@@ -68,11 +58,12 @@ func (l *LRUCache) ViewMap() (map[string]interface{}, error) {
 	return elements, nil
 }
 
-func (l *LRUCache) ViewExpire(key string) (string, error) {
+//CheckExpire check whether key is expired, if not expired, return left life time
+func (l *LRUCache) CheckExpire(key string) (string, error) {
 	if ele, ok := l.Elements[key]; ok {
 		//if expired, delete
 		if ele.isExpired() {
-			err := l.delete(ele)
+			err := l.deleteElement(ele)
 			return "", fmt.Errorf("key is not eixst %v", err)
 		}
 		//if not expire, calculate left time
@@ -86,12 +77,15 @@ func (l *LRUCache) ViewExpire(key string) (string, error) {
 	return "", fmt.Errorf("key is not eixst")
 }
 
-/*
-Methods for LRUElement
-*/
-func (e *LRUElement) isExpired() bool {
-	if e.Expire >= 0 && time.Now().Sub(time.Unix(e.TimeStamp, 0)).Seconds() >= e.Expire {
-		return true
+//ClearExpire clear all expired key in cache
+func (l *LRUCache) ClearExpire() error {
+	for _, ele := range l.Elements {
+		if ele.isExpired() {
+			err := l.deleteElement(ele)
+			if err != nil {
+				return err
+			}
+		}
 	}
-	return false
+	return nil
 }

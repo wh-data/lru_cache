@@ -1,6 +1,6 @@
 package lru_cache
 
-func (l *LRUCache) delete(ele *LRUElement) error {
+func (l *LRUCache) deleteElement(ele *LRUElement) error {
 	//1. delete ele in link
 	err := l.deleteLinkElement(ele)
 	if err != nil {
